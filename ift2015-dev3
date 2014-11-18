@@ -1,0 +1,83 @@
+#Question TP 	- utilisation de set pour détecter les doublons == legit?
+#					- 
+#To do :        - implanter table queue (hash de {table:queue}? une seul queue de tuples (player, table)?...) 
+#                  - 
+ 
+class Queue:
+	class Element:
+		def __init__(self, name, next=None):
+			self.value = name
+			self.next = next
+
+	def __init__(self, iterable=None):
+		self.first = None
+		self.last = None
+		
+		for item in iterable :
+			self.enqueue(item)
+		
+	def enqueue(self, item):	
+	    self.last = self._insert(item, self.last)
+		
+		
+	def _insert(self, item, previous) :
+	    
+		if not previous:
+			return self._addFirst(item)
+		else:
+			previous.next = Element(item, previous.next)
+			return previous.next
+			
+	def _addFirst(self, item):
+		self.first = Element(item, self.first)
+		return self.first
+	 
+	def dequeue(self):
+		if self.first:
+			e, self.first = self.first, self.first.next
+			return e
+		raise Exception("Dequeued an empty queue!")
+		
+	def isEmpty(self):
+		return self.first == None
+
+		
+class Casino_Queues:
+	def __init__(self):
+        self.players = set() # set de tout les players
+		self.broken_queue = Queue()
+		self.table_queue
+		self.normal_queue = Queue()
+	
+	def enqueue(self, name, table=None, priority=0):    
+		if(priority):
+			#Le joueur vient d'une table brisee
+			self.broken_queue.enqueue(name)
+		elif(table):
+			#sil y a une table, c'est que le joueur a fait une demande de changement de table
+			#self.table_queue 		(name, table)
+		else:
+            if name in self.players :
+                raise Exception("Player's name already used")
+            self.normal_queue.enqueue(name)
+	        self.players.add(name)
+
+	def dequeue(self):
+		if not self.broken_queue.isEmpty():
+			return self.broken_queue.dequeue
+#		elif not self.table_queue:
+		elif not self.normal_queue.isEmpty():
+			return self.normal_queue.dequeue
+		else :
+			raise Exception("No one in line in your casino dude.")
+	
+			
+class Table:
+	#initialplayers et players est l'ensembles des joueurs (leur id est une string) qui sont assis a la table
+    def __init__ (self, min_players, max_players, initialplayers=None):
+        self.players = initialplayers
+		self.min_players = min_players
+		self.max_players = max_players
+
+	
+casino = {tables : [Table(i,2*i) for i in range(2,5)], queue : Casino_Queues()}
