@@ -16,6 +16,7 @@ from ArrayHeapPriorityQueue import ArrayHeapPriorityQueue
 
 class OrderedList(list):
     """Liste ordonnée"""
+    @benchmarked(name='orderedlist-append')
     def append(self, value):
         """Ajout ordonné en O(n)"""
         for i, v in enumerate(self):
@@ -61,6 +62,7 @@ class HeapCentile:
 
         return (self.heap_smaller.min() + self.heap_greater.min()) / 2
 
+    @benchmarked(name='heapcentile-append')
     def append(self, temps):
         """Ajoute une donnée et renormalise autours du centile"""
         if self.heap_greater.is_empty() or temps > self.heap_greater.min():
@@ -176,7 +178,7 @@ class CasinoQueue:
         """Initialise un casino avec des joueurs initiaux"""
         self.players = set() # set de tout les players
 
-        self.centile = centile
+        self._centile = centile
 
         # files
         self.broken_queue = Queue()
@@ -218,7 +220,7 @@ class CasinoQueue:
             raise AttributeError("Quelqu'un dans la file porte déjà ton nom, tu vas attendre mec.")
 
         if broken:
-            #Le joueur vient d'une table brisee
+            # Le joueur vient d'une table brisee
             self.broken_queue.enqueue((name, table, time.time()))
         elif table:
             self.table_queue.enqueue((name, table, time.time()))
@@ -237,7 +239,7 @@ class CasinoQueue:
             joueur, table, temps = self.broken_queue.dequeue()
 
             # statistique
-            self.centile.append(time.time() - temps)
+            self._centile.append(time.time() - temps)
             return joueur
 
         elif table: # file de table
@@ -245,14 +247,18 @@ class CasinoQueue:
                 if t is table:
                     # statistique
                     self.broken_queue.remove((joueur, t, temps))
-                    self.centile.append(time.time() - temps)
+                    self._centile.append(time.time() - temps)
                     return joueur
 
         joueur, table, temps = self.normal_queue.dequeue()
 
         # statistiques...
-        self.centile.append(time.time() - temps)
+        self._centile.append(time.time() - temps)
         return joueur
+
+    @benchmarked()
+    def centile(self, c):
+        return self._centile.centile(c)
 
 class Table(set):
     """

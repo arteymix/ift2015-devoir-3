@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+import time
 import unittest
 
 from casino import Queue, CasinoQueue, Table, random_players
@@ -60,15 +63,19 @@ class QueueTest(unittest.TestCase):
 
 class CasinoQueueTest(unittest.TestCase):
     """Test le fonctionnement du Casino"""
-    def setUp(self):
-        self.casino = CasinoQueue()
-
     def test_centile(self):
-        self.casino.enqueue('John')
+        casino = CasinoQueue()
+        tables = [Table(['Alfred', 'Jean', 'Harry', 'Diego']) for _ in range(10)]
 
-        self.casino.dequeue()
+        for player in random_players(50):
+            casino.enqueue(player)
 
-        print(self.casino.centile.centile(20))
+        self.assertEqual(50, len(casino))
+        for _ in range(50):
+            time.sleep(0.1)
+            casino.dequeue()
+
+        self.assertNotEqual(casino.centile(10), casino.centile(50))
 
 if __name__ == '__main__':
     unittest.main()

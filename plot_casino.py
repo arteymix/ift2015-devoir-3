@@ -1,27 +1,31 @@
 from benchpy import benchmarked
-from Gnuplot import Gnuplot, Data
 
+import sys
 import numpy
-from casino import Queue
+from casino import Queue, OrderedList, HeapCentile
 
 if  __name__ == '__main__':
-
-    g = Gnuplot(persist=True)
-
     queue = Queue()
-
-    for i in range(10000):
+    for i in range(500):
         queue.enqueue(i)
 
-    for i in range(10000):
+    for i in range(500):
         queue.dequeue()
 
-    print(benchmarked.results[None])
+    for i in range(200):
+        queue = Queue(range(200))
+        queue.remove(i)
 
-    enqueue_data = Data(range(10), benchmarked.results[None]['enqueue'].take(1, axis=1))
-    dequeue_data = Data(reversed(range(10)), benchmarked.results[None]['dequeue'])
-    remove_data = Data(reversed(range(10)), benchmarked.results[None]['remove'])
+    o = OrderedList()
+    for i in range(1000):
+        o.append(i)
 
-    g.plot(enqueue_data)
-    g.plot(dequeue_data)
+    h = HeapCentile(30)
+    for i in range(1000):
+        # :h.append(i)
+        pass
 
+    for function in {'enqueue', 'dequeue', 'remove', 'orderedlist-append'}:
+        with open('results/{}.plt'.format(function), 'w') as f:
+            for col, row in enumerate(benchmarked.results(function)):
+                f.write('{}\t{}\n'.format(col, row[0]))
