@@ -60,7 +60,7 @@
 \maketitle
 
 \abstract
-Implémentation d'une file à priorités multiples et tests relatifs.
+Implémentation et analyse empirique d'une file à priorités multiples.
 
 \section{Casino}
 
@@ -128,27 +128,31 @@ itération à travers les 3 queues. Pour cause de mauvaise complexité, nous
 avons refusé cette option. Il nous aurait été possible de faire un arbre qui
 stocke les noms de tout les joueurs qui sont dans le casino et qui font des
 recherches en O(log n). Pour cause de flemmardise, nous avons refusé cette
-option. Nous avons implémenté \_\_contains\_\_ qui test l'appartenance à un
+option. Nous avons implémenté \textsf{\_\_contains\_\_} qui test l'appartenance à un
 objet à self.players (un set!)lors de l'entrée d'un nouveau joueur dans le
 casino (ajout d'un joueur à la normal\_queue).
 
 \subsubsection{Analyse empirique de \textsf{Queue}}
-Tous les tests ont été exécutés sur 500 entrées.
+Tous les tests ont été exécutés sur 1000 entrées.
 
 \begin{figure}
-\caption{Temps d'exécution de \textsf{enqueue} en fonction du nombre d'entrée.}
+  \centering
+  \input{figures/enqueue.tex}
+  \caption{Temps d'exécution de \textsf{enqueue} en fonction du nombre d'entrée.}
 \end{figure}
 On constate que la file enqueue en temps constant.
 
 \begin{figure}
+  \input{figures/dequeue.tex}
 \caption{Temps d'exécution de \textsf{dequeue} en fonction du nombre d'entrée.}
 \end{figure}
 On constate que la file dequeue en temps constant.
 
 \begin{figure}
-\caption{Temps d'exécution de \textsf{remove} en fonction du nombre d'entrée.}
+  \input{figures/remove.tex}
+  \caption{Temps d'exécution de \textsf{remove} en fonction du nombre d'entrée.}
 \end{figure}
-Dans ce cas, la file était initialisé à 500 items à chaque opération. On
+Dans ce cas, la file était initialisé à 1000 items à chaque opération. On
 constate qu'enlever un élément de la liste se fait en temps linéaire sur le
 nombre d'éléments.
 
@@ -160,14 +164,16 @@ d'ajout \textsf{append}, qui est testé dans ce cas d'analyse.
 
 \subsection{Calcul de centile par une liste ordonnée}
 \begin{figure}
+  \input{figures/orderedlist-append.tex}
 \caption{Temps d'exécution de \textsf{append} en fonction du nombre d'entrée.}
 \end{figure}
-Dans ce cas, la file était initialisé à 500 items à chaque opération. On
+Dans ce cas, la file était initialisé à 1000 items à chaque opération. On
 constate qu'enlever un élément de la liste se fait en temps linéaire sur le
 nombre d'éléments.
 
 \subsection{Calcul de centile par deux monceaux}
 \begin{figure}
+  \input{figures/heapcentile-append.tex}
 \caption{Temps d'exécution de \textsf{append} en fonction du nombre d'entrée.}
 \end{figure}
 Dans ce cas, la file était initialisé à 500 items à chaque opération. On

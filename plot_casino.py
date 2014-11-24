@@ -1,24 +1,25 @@
 from benchpy import benchmarked
 
+import random
 import sys
 import numpy
 from casino import Queue, OrderedList, HeapCentile
 
 if  __name__ == '__main__':
     queue = Queue()
-    for i in range(500):
+    for i in range(1000):
         queue.enqueue(i)
 
-    for i in range(500):
+    for i in range(1000):
         queue.dequeue()
 
-    for i in range(200):
-        queue = Queue(range(200))
+    for i in range(1000):
+        queue = Queue(range(1000))
         queue.remove(i)
 
     o = OrderedList()
-    for i in range(1000):
-        o.append(i)
+    for d in range(1000):
+        o.append(d)
 
     h = HeapCentile(30)
     for i in range(1000):
