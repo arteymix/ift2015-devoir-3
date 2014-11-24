@@ -22,10 +22,10 @@ class PriorityQueue:
             self._value = v
 
         def __lt__( self, other ):
-            return self._key < other._key
+            return self._key < other #._key
 
         def __gt__( self, other ):
-            return self._key > other._key
+            return self._key > other #._key
 
         def __str__( self ):
             return "(" + str( self._key ) + "," + str( self._value ) + ")"
