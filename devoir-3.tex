@@ -143,12 +143,14 @@ Tous les tests ont été exécutés sur 1000 entrées.
 On constate que la file enqueue en temps constant.
 
 \begin{figure}
+  \centering
   \input{figures/dequeue.tex}
-\caption{Temps d'exécution de \textsf{dequeue} en fonction du nombre d'entrée.}
+  \caption{Temps d'exécution de \textsf{dequeue} en fonction du nombre d'entrée.}
 \end{figure}
 On constate que la file dequeue en temps constant.
 
 \begin{figure}
+  \centering
   \input{figures/remove.tex}
   \caption{Temps d'exécution de \textsf{remove} en fonction du nombre d'entrée.}
 \end{figure}
@@ -164,8 +166,9 @@ d'ajout \textsf{append}, qui est testé dans ce cas d'analyse.
 
 \subsection{Calcul de centile par une liste ordonnée}
 \begin{figure}
+  \centering
   \input{figures/orderedlist-append.tex}
-\caption{Temps d'exécution de \textsf{append} en fonction du nombre d'entrée.}
+  \caption{Temps d'exécution de \textsf{append} sur \textsf{OrderedList} en fonction du nombre d'entrée.}
 \end{figure}
 Dans ce cas, la file était initialisé à 1000 items à chaque opération. On
 constate qu'enlever un élément de la liste se fait en temps linéaire sur le
@@ -173,10 +176,19 @@ nombre d'éléments.
 
 \subsection{Calcul de centile par deux monceaux}
 \begin{figure}
+  \centering
   \input{figures/heapcentile-append.tex}
-\caption{Temps d'exécution de \textsf{append} en fonction du nombre d'entrée.}
+  \caption{Temps d'exécution de \textsf{append} sur \textsf{HeapCentile} en fonction du nombre d'entrée.}
 \end{figure}
 Dans ce cas, la file était initialisé à 500 items à chaque opération. On
 constate qu'enlever un élément de la liste se fait en temps linéaire sur le
 nombre d'éléments.
+
+Les deux droites constantes observées sont dûes au fait de normaliser à chaque
+ajout dans le monceau. Lorsque les monceaux possède un nombre différent
+d'entrées, un coût s'ajoute au fait d'insérer dans un monceau.
+
+Quant à faire, il aurait été préférable de simplement insérer dans le monceau
+sans normaliser afin de pouvoir observer la coube logarithmique associée aux
+opérations sur les monceaux.
 \end{document}
