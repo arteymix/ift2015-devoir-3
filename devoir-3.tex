@@ -1,0 +1,61 @@
+\documentclass[french]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper]{geometry}
+\usepackage[french]{babel}
+
+\title{Devoir 3 \\Structure de Données}
+\author{Guillaume Poirier-Morency p1053380 \\ Vincent Antaki p1038646}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\begin{document}
+
+\maketitle
+\subsection{Résumé}
+
+Implémentation d'une file à priorités multiples et tests relatifs.
+
+\section{}
+
+
+\section{}
+
+La classe Queue
+
+Notre implémentation commence avec la classe Queue qui impémente une structure 
+de liste chainée simple et les fonctions enqueue() dequeue() et remove(). Les 
+fonctions built-in python 
+(\_\_len\_\_, \_\_iter\_\_, \_\_bool\_\_, \_\_next\_\_, \_\_contains\_\_, ...) 
+on été utilisée pour améliorer la rapidité d'exécution de notre programme et 
+ainsi qu'en faciliter l'implémentation.
+
+CasinoQueue
+
+Les instances de la classe CasinoQueue sont des files à 3 priorités. Elles 
+possèdent les fonctions de base des files : enqueue() et dequeue(). Elle 
+possède 3 files chainées de la classe Queue correspondant à ses trois 
+priorités (table brisée, changement de table et le reste). Les éléments mis 
+dans les files sont des tuplets de joueur, temps d'entrée dans la file et, 
+dans le cas de la file pour changement de table, la table désirée.  
+
+Lorsque appelée, la fonction dequeue retire, en tout respect de l'énoncé, une 
+personne de la file ou retourne une exception si cela est impossible. 
+dequeue() possède un ordre constant lorsque il y a des éléments dans la queue 
+pour table brisée et a une ordre linéaire par rapport au nombre de joueur dans 
+la queue pour changement de table dans tous les autres cas.
+
+Chaque appel de la fonction enqueue vérifie que le nom entrée n'est pas un 
+doublon d'un nom existant déjà dans le casino. Si ce n'est pas le cas, les 
+paramètres table et broken détermineront à quelle file sera enqueue le joueur.
+
+Il nous aurait été possible d'implémenter la vérification des doublons par une 
+itération à travers les 3 queues. Pour cause de mauvaise complexité, nous 
+avons refusé cette option. Il nous aurait été possible de faire un arbre qui 
+stocke les noms de tout les joueurs qui sont dans le casino et qui font des 
+recherches en O(log n). Pour cause de flemmardise, nous avons refusé cette 
+option. Nous avons implémenté \_\_contains\_\_ qui test l'appartenance à un 
+objet à self.players (un set!)lors de l'entrée d'un nouveau joueur dans le 
+casino (ajout d'un joueur à la normal\_queue).
+
+
+
+\end{document}
