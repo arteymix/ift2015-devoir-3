@@ -164,6 +164,8 @@ class HeapCentile:
     """
     Utilise deux monceaux pour déterminer le centile d'un ensemble de données
     """
+    __slots__ = ['_centile', 'heap_smaller', 'heap_greater']
+
     def __init__(self, centile):
         # monceaux et liste ordonnée pour calculer les centiles
         self._centile = centile
@@ -209,6 +211,7 @@ class Queue:
     """
     class Element:
         """Élément de la file"""
+        __slots__ = ['value', '_next']
         def __init__(self, value, n=None):
             self.value = value
             self._next = n
@@ -218,6 +221,8 @@ class Queue:
 
         def next(self):
             return self._next
+
+    __slots__ = ['first', 'last']
 
     def __init__(self, iterable=[]):
         self.first = None
