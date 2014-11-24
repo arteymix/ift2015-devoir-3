@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Code Python pour le cours IFT2015
    Mise à jour par François Major le 23 mars 2014.
 """
