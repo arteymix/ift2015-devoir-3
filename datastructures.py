@@ -156,9 +156,10 @@ class OrderedList(list):
             list.append(self, value)
 
     def centile(self, n):
-        if n < 0 or n >= 100:
+        """Retourne le n-ième centile de la liste"""
+        if n < 0 or n > 100:
             raise AttributeError
-        return self[n // 100 * (len(self) - 1)]
+        return self[int(float(n) / 100.0 * len(self))]
 
 class HeapCentile:
     """
