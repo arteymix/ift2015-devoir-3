@@ -7,6 +7,7 @@
 
 \usepackage{fullpage}
 \usepackage{graphicx}
+\usepackage{hyperref}
 \usepackage{listings}
 \usepackage{xcolor}
 
@@ -62,43 +63,54 @@
 \abstract
 Implémentation et analyse empirique d'une file à priorités multiples.
 
+Le projet utilise \textsf{benchpy} pour faire l'analyse empirique des temps
+d'exécution des fonctions. Ce module est très pratique, car il permet de faire
+le suivit d'une fonction à l'aide d'un décorateur.
+
+Le travail est accompagné de tests unitaires qui assurent le bon fonctionnement
+des structures de données. Ceux-ci peuvent être exécutés avec l'utilitaire
+\textsf{nosetests}.
+
+Vous pouvez l'installer les dépendances avec \textsf{pip}:
+\begin{lstlisting}
+pip install --user benchpy nosetests
+\end{lstlisting}
+
 \section{Casino}
 
 \subsection{Implantation du Casino}
-Les figures 1 et 2 décrivent minimalement l'implantation du Casino.
+Les \autoref{figure:diagramme-datastructures} et
+\autoref{figure:diagramme-casino} décrivent minimalement l'implantation du
+Casino.
 
 \begin{figure}
-\lstinputlisting[language=Python,firstline=204,lastline=226]{datastructures.py}
-\caption
-{
-  La file est implémentée avec une liste chaînée et conserve une référence vers
-  le début et la fin de la liste pour \textsf{enqueue} et \textsf{dequeue} dans
-  l'ordre de $O(1)$.
-}
+  \centering
+  \caption{Diagramme de classes des structures de données}
+  \label{figure:diagramme-datastructures}
+  \includegraphics[resolution=130]{figures/diagramme-datastructures.png}
 \end{figure}
 
 \begin{figure}
-\lstinputlisting[language=Python,firstline=18,lastline=38]{casino.py}
-\caption{La file du Casino est composée de trois files \textsf{Queue}.}
+  \centering
+  \caption{Diagramme de classes du Casino.}
+  \label{figure:diagramme-casino}
+  \includegraphics[resolution=130]{figures/diagramme-casino.png}
 \end{figure}
 
 \subsection{Description du fonctionnement du Casino}
-\begin{figure}
-  \centering
-  \includegraphics[resolution=130]{figures/diagramme-casino.png}
-  \caption{Diagramme de classes du Casino.}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[resolution=130]{figures/diagramme-datastructures.png}
-  \caption{Diagramme de classes des structures de données}
-\end{figure}
 
 \subsubsection{Classe \textsf{Queue}}
-Notre implémentation du Casino est basée sur la classe Queue. La file est
-représentée par une liste simplement chainée. Elle respecte l'interface
-\textsf{enqueue} \textsf{dequeue} et \textsf{remove}. 
+
+\begin{figure}
+  \centering
+  \label{figure:casino}
+  \caption{La file du Casino est composée de trois files \textsf{Queue}.}
+  \lstinputlisting[language=Python,firstline=18,lastline=38,numbers=left]{casino.py}
+\end{figure}
+
+Notre implémentation du Casino est basée sur la classe \textsf{Queue}. La file
+est représentée par une liste simplement chainée. Elle respecte l'interface
+\textsf{enqueue} \textsf{dequeue} et \textsf{remove}.
 
 Elle utilise les fonctions magiques de Python pour fournir un iterable, la
 longueur, l'élément suivant, l'appartenance et la valeur booléen. C'est une
@@ -106,57 +118,100 @@ approche qui facilite l'implémentation et qui favorise une utilisation simple d
 la structure de donnée.
 
 \subsubsection{Classe \textsf{CasinoQueue}}
-Les instances de la classe CasinoQueue sont des files à 3 priorités. Elles
-possèdent les fonctions de base des files : \textsf{enqueue} et
-\textsf{dequeue}. Elle possède 3 files chainées de la classe Queue correspondant
-à ses trois priorités (table brisée, changement de table et le reste). Les
-éléments mis dans les files sont des tuplets de joueur, temps d'entrée dans la
-file et, dans le cas de la file pour changement de table, la table désirée.
 
-Lorsque appelée, la fonction dequeue retire, en tout respect de l'énoncé, une
-personne de la file ou retourne une exception \textsf{IndexError} si cela est
-impossible. \textsf{dequeue} possède un ordre constant lorsque il y a des éléments
+\begin{figure}
+\caption
+{
+  La file est implémentée avec une liste chaînée et conserve une référence vers
+  le début et la fin de la liste pour \textsf{enqueue} et \textsf{dequeue} dans
+  l'ordre de $O(1)$.
+}
+\label{figure:datastructures}
+\lstinputlisting[language=Python,firstline=206,lastline=224,numbers=left]{datastructures.py}
+\end{figure}
+
+Une instance de la classe \textsf{CasinoQueue} est une file à 3 priorités.  Elle
+possède les fonctions de base des files : \textsf{enqueue} et \textsf{dequeue}.
+Elle possède 3 files basé sur la classe \textsf{Queue} correspondant à ses trois
+priorités:
+\begin{itemize}
+\item table brisée ;
+\item changement de table ;
+\item nouveaux joueurs.
+\end{itemize}
+
+Les éléments mis dans les files sont des tuplets de joueur, table désirée et
+temps d'entrée. \textsf{None} comme valeur de table signifie que le joueur ne
+veut pas de table en particulier.
+
+Lorsque appelée, la fonction \textsf{dequeue} retire, en tout respect de
+l'énoncé, une personne de la file. Une exception \textsf{IndexError} est lancée
+si il n'y a plus d'élément dans la file.
+
+\textsf{dequeue} possède un ordre constant lorsque il y a des éléments
 dans la queue pour table brisée et a une ordre linéaire par rapport au nombre de
 joueur dans la queue pour changement de table dans tous les autres cas.
 
-Chaque appel de la fonction enqueue vérifie que le nom entrée n'est pas un
-doublon d'un nom existant déjà dans le casino. Si ce n'est pas le cas, les
-paramètres table et broken détermineront à quelle file sera enqueue le joueur.
+Chaque appel de la fonction \textsf{enqueue} vérifie que le nom entrée n'est pas
+un doublon d'un nom existant déjà dans le casino. Si ce n'est pas le cas, les
+paramètres \textsf{table} et \textsf{broken} détermineront à quelle file sera
+enqueue le joueur. Une fois ajouté dans la file, le joueur est aussi ajouté à
+l'ensemble des joueurs de la file pour accélérer la recherche.
 
 Il nous aurait été possible d'implémenter la vérification des doublons par une
-itération à travers les 3 queues. Pour cause de mauvaise complexité, nous
-avons refusé cette option. Il nous aurait été possible de faire un arbre qui
-stocke les noms de tout les joueurs qui sont dans le casino et qui font des
-recherches en O(log n). Pour cause de flemmardise, nous avons refusé cette
-option. Nous avons implémenté \textsf{\_\_contains\_\_} qui test l'appartenance à un
-objet à self.players (un set!)lors de l'entrée d'un nouveau joueur dans le
-casino (ajout d'un joueur à la normal\_queue).
+itération à travers les 3 files, mais cela aurait coûté une complexité d'ordre
+$O(n)$. Il nous aurait été possible de faire un arbre qui stocke les noms de
+tout les joueurs qui sont dans le casino et qui font des recherches en 
+$O(log(n))$.
+
+Pour cause de flemmardise, nous avons utilisé un \textsf{HashSet} (\textsf{set}
+en Python) pour tester rapidement $O(1)$ l'appartenance du joueur à la file du
+Casino. Le test s'effectue à travers la méthode magique
+\textsf{\_\_contains\_\_} de \textsf{CasinoQueue}.
 
 \subsubsection{Analyse empirique de \textsf{Queue}}
 Tous les tests ont été exécutés sur 1000 entrées.
 
+L'opération enqueue devrait se faire en temps constant, car la file possède une
+référence vers la fin, \textsf{last}.
+
 \begin{figure}
   \centering
-  \input{figures/enqueue.tex}
   \caption{Temps d'exécution de \textsf{enqueue} en fonction du nombre d'entrée.}
+  \label{figure:enqueue}
+  \input{figures/enqueue.tex}
 \end{figure}
-On constate que la file enqueue en temps constant.
+
+Par analyse empirique en \autoref{figure:enqueue}, on constate que la file
+enqueue en temps constant avec une trentaine de données aberrantes.
+
+L'opération dequeue devrait se faire en temps constant, car il correspond à
+substituer le deuxièment élément de la file par le premier et de retourner le
+premier. Avec une référence sur le premier élément, le tout se fait en temps
+constant.
 
 \begin{figure}
   \centering
-  \input{figures/dequeue.tex}
   \caption{Temps d'exécution de \textsf{dequeue} en fonction du nombre d'entrée.}
+  \label{figure:dequeue}
+  \input{figures/dequeue.tex}
 \end{figure}
-On constate que la file dequeue en temps constant.
+On constate que la file dequeue en temps constant sur la
+\autoref{figure:dequeue}. Comme pour l'enqueue, il y a une trentaine de données
+aberrantes négligables.
+
+L'opération \textsf{remove} devrait se faire en temps $O(n)$ en pire cas lorsque
+l'élément qui est enlevé se trouve à la fin de la liste.
 
 \begin{figure}
   \centering
-  \input{figures/remove.tex}
   \caption{Temps d'exécution de \textsf{remove} en fonction du nombre d'entrée.}
+  \label{figure:remove}
+  \input{figures/remove.tex}
 \end{figure}
-Dans ce cas, la file était initialisé à 1000 items à chaque opération. On
-constate qu'enlever un élément de la liste se fait en temps linéaire sur le
-nombre d'éléments.
+Dans la \autoref{figure:remove}, la file était initialisé à 1000 items à chaque
+opération. On constate qu'enlever un élément de la liste se fait en temps
+linéaire sur le nombre d'éléments.
 
 \section{Calcul du n-ième centile}
 Les centils sont calculés avec soit une liste ordonnée \textsf{OrderedList} ou
@@ -165,30 +220,51 @@ du cours. Les calculateurs étaient interfacés pour fournir une méthode unique
 d'ajout \textsf{append}, qui est testé dans ce cas d'analyse.
 
 \subsection{Calcul de centile par une liste ordonnée}
+La liste ordonnée est implantée en héritant du type \textsf{list} de Python. La
+méthode \textsf{append} a été surchargée afin d'insérer de manière ordonnée dans
+la structure de donnée.
+
+Il faut un temps $p$ pour déterminer que un nouvel élément doit être inséré à la
+position $p$ et un temps $n - p$ pour décaler les éléments qui suivent l'endroit
+ou l'insertion se fait. Par conséquent, la complexité est toujours d'ordre
+$O(n)$. Une insertion à la fin nécéssite un parcours complet et une insertion au
+début nécéssite un décalage complet.
+
 \begin{figure}
   \centering
-  \input{figures/orderedlist-append.tex}
   \caption{Temps d'exécution de \textsf{append} sur \textsf{OrderedList} en fonction du nombre d'entrée.}
+  \label{figure:orderedlist-append}
+  \input{figures/orderedlist-append.tex}
 \end{figure}
-Dans ce cas, la file était initialisé à 1000 items à chaque opération. On
-constate qu'enlever un élément de la liste se fait en temps linéaire sur le
-nombre d'éléments.
+
+On peut observer 3 droites fortes et une droite faible en
+\autoref{figure:orderedlist-append}. Le fait de mélanger décalage et parcours
+est probablement la raison de cette observation.
 
 \subsection{Calcul de centile par deux monceaux}
+Pour implanter le calcul du centile à l'aide de deux monceaux, nous avons créé
+la classe \textsf{HeapCentile} qui stocke des données dans deux monceaux minumum
+et maximum. Après chaque ajout par \textsf{append}, le monceaux sont normalisés
+autours du centile de référence.
+
+La conception de la fonction \textsf{\_normalize} est de telle sorte qu'elle
+peut normaliser les deux monceaux autours de n'importe quel centile comme pour
+le \textsf{OrderedList} qui retourne le centile demandé.
+
 \begin{figure}
   \centering
-  \input{figures/heapcentile-append.tex}
   \caption{Temps d'exécution de \textsf{append} sur \textsf{HeapCentile} en fonction du nombre d'entrée.}
+  \label{figure:heapcentile-append}
+  \input{figures/heapcentile-append.tex}
 \end{figure}
-Dans ce cas, la file était initialisé à 500 items à chaque opération. On
-constate qu'enlever un élément de la liste se fait en temps linéaire sur le
-nombre d'éléments.
 
-Les deux droites constantes observées sont dûes au fait de normaliser à chaque
-ajout dans le monceau. Lorsque les monceaux possède un nombre différent
-d'entrées, un coût s'ajoute au fait d'insérer dans un monceau.
+Les deux droites constantes observées en \autoref{figure:heapcentile-append}
+sont dûes au fait de normaliser à chaque ajout dans le monceau. Lorsque les
+monceaux possède un nombre différent d'entrées, un coût d'ordre $O(log(n))$
+s'ajoute au fait de compter d'enlever et d'insérer dans un monceau.
 
 Quant à faire, il aurait été préférable de simplement insérer dans le monceau
 sans normaliser afin de pouvoir observer la coube logarithmique associée aux
-opérations sur les monceaux.
+opérations sur les monceaux, mais nous avons préféré respecter l'énoncé.
+
 \end{document}
